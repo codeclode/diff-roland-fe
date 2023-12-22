@@ -2,21 +2,7 @@
   <div class="container">
     <div class="chartContainer">
       <NH3 style="margin-bottom: 0;color: rgb(67, 144, 212);">{{ title }}</NH3>
-      <div class="canvas" ref="canvas" :style="`overflow:${type === 'chart' ? 'hidden' : 'auto'}`">
-        <img style="width: 90%;" v-if="chartType === 'map'" src="/map.png">
-        <video class="video" v-if="type === 'video'" src="/video.mp4" controls></video>
-        <div v-else-if="type === 'table'">
-          <NInput style="background-color:transparent;margin-bottom: 3px;" placeholder="请输入查询条件"></NInput>
-          <NDataTable :data="data" :columns="columns" :pagination="paginationReactive">
-          </NDataTable>
-        </div>
-        <div v-else-if="type === 'datas'" class="datas">
-          <div v-for="data in datas" class="data" :style="data.style">
-            <NH4 :style="data.style">{{ data.title }}</NH4>
-            <n-number-animation :from="0" :to="data.num" />
-          </div>
-        </div>
-      </div>
+      <component class="canvas" :is="target[chartType]"></component>
       <svg width="50" height="30" class="outline" stroke="#11acff" stroke-width="5">
         <line x1="0" x2="0" y1="30" y2="10"></line>
         <line x1="0" x2="10" y1="10" y2="0"></line>
@@ -26,42 +12,54 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, reactive, ref, shallowRef, watch } from 'vue';
-import { NDataTable, NH3, NInput, NH4, NNumberAnimation } from "naive-ui";
+import { reactive } from 'vue';
+import { NH3 } from "naive-ui";
 
-import { EChartsOption, EChartsType } from "echarts";
-import { debounce } from "lodash-es";
-import { initChart } from "./charts/utils/initChart";
-import { cardContentType } from '../utils/types';
-import { pieOption, usedOption, lineOption, mapOption, scatter, barOption, areaOption } from "./charts";
+import { EChartsOption } from "echarts";
+import {
+  DatabaseLogsList,
+  DataVolumeStatistics,
+  DBCPUDash,
+  DBDiskDash,
+  LargeScaleGraphOfInputData,
+  DBConnectionStatus,
+  AnalysisStation,
+  AnalysisDegree,
+  AnalysisSendData,
+  ErrorStationList,
+  AbnormalFieldStrengthSiteProportion,
+  AbnormalSignalToNoiseRatioSiteProportion,
+  PerimeterDifferenceErrorSiteProportion
+} from "./metaComponents";
 
-export type chartTypes = "pie" | "map" | "used" | "scatter" | "bar" | "line" | "area";
 
-const canvas = ref<HTMLDivElement>();
-const props = defineProps<{
+export type chartTypes = "DataVolumeStatistics" | "LargeScaleGraphOfInputData" | "DatabaseLogsList" |
+  "DBCPUDash" | "DBDiskDash" | "DBConnectionStatus" | "AnalysisStation" | "AnalysisDegree" |
+  "AnalysisSendData" | "ErrorStationList" | "AbnormalFieldStrengthSiteProportion" |
+  "AbnormalSignalToNoiseRatioSiteProportion" | "PerimeterDifferenceErrorSiteProportion";
+
+const target: Record<chartTypes, EChartsOption> = {
+  "DataVolumeStatistics": DataVolumeStatistics,
+  "LargeScaleGraphOfInputData": LargeScaleGraphOfInputData,
+  "DatabaseLogsList": DatabaseLogsList,
+  "DBCPUDash": DBCPUDash,
+  "DBDiskDash": DBDiskDash,
+  "DBConnectionStatus": DBConnectionStatus,
+  "AnalysisStation": AnalysisStation,
+  "AnalysisDegree": AnalysisDegree,
+  "AnalysisSendData": AnalysisSendData,
+  "ErrorStationList": ErrorStationList,
+  "AbnormalFieldStrengthSiteProportion": AbnormalFieldStrengthSiteProportion,
+  "AbnormalSignalToNoiseRatioSiteProportion": AbnormalSignalToNoiseRatioSiteProportion,
+  "PerimeterDifferenceErrorSiteProportion": PerimeterDifferenceErrorSiteProportion,
+}
+
+defineProps<{
   height: number,
   width: number,
-  type: cardContentType,
   title: string,
-  chartType?: chartTypes
+  chartType: chartTypes
 }>();
-const columns = [
-  {
-    title: 'Name',
-    key: 'name'
-  },
-  {
-    title: 'Address',
-    key: 'address'
-  }
-]
-
-const data = Array.from({ length: 46 }).map((_, index) => ({
-  key: index,
-  name: `Edward King ${index}`,
-  age: 32,
-  address: `London, Park Lane no. ${index}`
-}));
 const paginationReactive = reactive({
   page: 2,
   pageSize: 4,
@@ -74,54 +72,6 @@ const paginationReactive = reactive({
     paginationReactive.pageSize = pageSize
     paginationReactive.page = 1
   }
-})
-
-const datas: { title: string, num: number, style: string }[] = [{
-  title: "总站点数",
-  num: 230,
-  style: "color:skyblue;"
-}, {
-  title: "可用站点",
-  num: 175,
-  style: "color:green;"
-}, {
-  title: "异常站点1",
-  num: 55,
-  style: "color:red;"
-},]
-
-const myChart = shallowRef<EChartsType>();
-
-const target: Record<chartTypes, EChartsOption> = {
-  "area": areaOption,
-  "bar": barOption,
-  "line": lineOption,
-  "map": mapOption,
-  "pie": pieOption,
-  "scatter": scatter,
-  "used": usedOption
-}
-
-function refreshCanvas() {
-
-  if (props.type === "chart" && props.chartType && props.chartType !== 'map') {
-    initChart(target[props.chartType], canvas, myChart);
-  }
-};
-
-watch([canvas], refreshCanvas, {
-  immediate: true
-});
-
-onMounted(() => {
-  const dRefreshCanvas = debounce(() => {
-    if (myChart.value) {
-      myChart.value.resize();
-    }
-  }, 300);
-  window.addEventListener("resize", () => {
-    dRefreshCanvas();
-  });
 })
 
 </script>
@@ -153,9 +103,9 @@ onMounted(() => {
   position: relative;
 }
 
-.chartContainer>.canvas {
+.chartContainer:deep(.canvas) {
   width: 90%;
-  height: 90%;
+  height: calc(90% - 18px);
   box-sizing: border-box;
   overflow: auto;
   object-fit: contain;
@@ -172,60 +122,5 @@ onMounted(() => {
   position: absolute;
   left: 4%;
   bottom: 15px;
-}
-
-.video {
-  display: block;
-  width: 90%;
-  margin: 0 auto;
-}
-
-.datas {
-  display: flex;
-  height: 90%;
-  width: 100%;
-  justify-content: space-evenly;
-  align-items: center;
-  font-size: 1.2em;
-  font-weight: bold;
-}
-
-.data {
-  padding: 10px;
-  border: 1px solid currentColor;
-  border-radius: 10px;
-}
-
-.row {
-  background-color: transparent;
-  color: aqua;
-}
-
-:deep(.n-data-table .n-data-table-td) {
-  background-color: transparent;
-  color: aqua;
-}
-
-:deep(.n-data-table .n-data-table-tr) {
-  background-color: transparent !important;
-  color: aqua;
-}
-:deep(.n-data-table .n-data-table-thead){
-  background-color: transparent !important;
-  color: aqua;
-}
-:deep(.n-data-table .n-data-table-th) {
-  background-color: transparent !important;
-  color: aqua;
-}
-
-:deep(.n-data-table .n-data-table-table) {
-  background-color: transparent !important;
-  color: aqua;
-  font-weight: 600 !important;
-}
-
-:deep(.n-data-table .n-data-table__pagination){
-  color: aqua !important;;
 }
 </style>

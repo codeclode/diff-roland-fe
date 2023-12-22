@@ -1,20 +1,18 @@
 <template>
   <div class="cardContainer">
-    <ChartContainer :title="title" :chart-type="chartType" :type="type" :height="gHeight" :width="width"></ChartContainer>
+    <ChartContainer :title="title" :chart-type="chartType" :height="gHeight" :width="width"></ChartContainer>
   </div>
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
-import { cardContentType } from '../utils/types';
 
 import ChartContainer, { chartTypes } from './ChartContainer.vue';
 export type WhrOption = 0.5 | 0.75 | 1 | 1.5 | 2 | 3
 export type CardProp = {
   order: number,
   width: number,
-  type: cardContentType,
   whr?: WhrOption,
-  chartType?: chartTypes,
+  chartType: chartTypes,
   title: string
 }
 const props = withDefaults(defineProps<CardProp>(), {
