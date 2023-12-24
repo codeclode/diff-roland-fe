@@ -1,6 +1,13 @@
 <template>
   <div class="bigScreenContainer">
-    <NH1 class="title">{{ dash.title }}</NH1>
+    <div class="title__container">
+      <NH2 class="title">北京时间{{ bjtime }}</NH2>
+      <div class="logo-title">
+        <img src="/logo.png" />
+        <NH1 class="title">{{ dash.title }}</NH1>
+      </div>
+      <NH2 class="title">UTC时间{{ utc }}</NH2>
+    </div>
     <div class="gridContainer">
       <Card v-for="(layout) in layoutGrids" :title="layout.title" :key="layout.order" :whr="layout.whr"
         :chart-type="layout.chartType" :width="layout.width" :order="layout.order">
@@ -12,12 +19,12 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue';
 import Card, { CardProp } from './Card.vue';
-import { NH1 } from "naive-ui";
+import { NH1, NH2 } from "naive-ui";
 
 type Layout = CardProp
 type dashBoard = { layouts: Layout[], title: string }
 const rawLayouts1 = reactive<dashBoard>({
-  title: "增强型罗兰性能分析系统",
+  title: "增强型罗兰数据综合管理系统",
   layouts: [{
     width: 4,
     order: 1,
@@ -41,7 +48,7 @@ const rawLayouts1 = reactive<dashBoard>({
     order: 3,
     whr: 3,
     chartType: "DataVolumeStatistics",
-    title: "时间序列"
+    title: "数据库各项数据体量统计图"
   }, {
     width: 4,
     order: 3,
@@ -61,50 +68,50 @@ const rawLayouts2 = reactive<dashBoard>({
     width: 2,
     order: 1,
     whr: 1.5,
-    chartType: "DataVolumeStatistics",
+    chartType: "VisualizationWarning",
     title: "告警统计"
   }, {
     width: 4,
     order: 2,
     whr: 1.5,
-    chartType: "DataVolumeStatistics",
+    chartType: "StationMap",
     title: "监测站地图"
   }, {
     width: 2,
     order: 3,
     whr: 1.5,
-    chartType: "DataVolumeStatistics",
-    title: "监控视频"
+    chartType: "VisualizationVideo",
+    title: "监测站1设备视频"
   }, {
     width: 2,
     order: 3,
     whr: 1.5,
-    chartType: "DataVolumeStatistics",
-    title: "当前可用性"
+    chartType: "VisualizationAnalysisResult",
+    title: "综合数据分析结果"
   }, {
     width: 2,
     order: 3,
     whr: 1.5,
-    chartType: "DataVolumeStatistics",
-    title: "监控视频"
+    chartType: "VisualizationVideo",
+    title: "监测站2设备视频"
   }, {
     width: 2,
     order: 3,
     whr: 1.5,
-    chartType: "DataVolumeStatistics",
-    title: "可用性统计"
+    chartType: "VisualizationCPU",
+    title: "CPU占用"
   }, {
     width: 4,
     order: 3,
     whr: 3,
-    chartType: "DataVolumeStatistics",
-    title: "监测数据面积图"
+    chartType: "VisualizationDataVolumn",
+    title: "监测数据统计"
   }, {
     width: 2,
     order: 3,
     whr: 1.5,
-    chartType: "DataVolumeStatistics",
-    title: "数据库空间"
+    chartType: "VisualizationDisk",
+    title: "数据库已用空间"
   }]
 });
 const rawLayouts3 = reactive<dashBoard>({
@@ -113,7 +120,7 @@ const rawLayouts3 = reactive<dashBoard>({
     width: 4,
     order: 1,
     whr: 1.5,
-    chartType: "DataVolumeStatistics",
+    chartType: "StationMap",
     title: "监测站地图"
   }, {
     width: 2,
@@ -159,6 +166,40 @@ const rawLayouts3 = reactive<dashBoard>({
     title: "数据发送统计"
   }]
 });
+const rawLayouts4 = reactive<dashBoard>({
+  title: "数据传输预处理软件",
+  layouts: [{
+    width: 4,
+    order: 2,
+    whr: 1.5,
+    chartType: "StationMap",
+    title: "监测站地图（近5min发送数据）"
+  }, {
+    width: 4,
+    order: 1,
+    whr: 1.5,
+    chartType: "PreLogsList",
+    title: "日志列表"
+  }, {
+    width: 3,
+    order: 4,
+    whr: 1.5,
+    chartType: "PreSend",
+    title: "数据收发"
+  }, {
+    width: 3,
+    order: 4,
+    whr: 1.5,
+    chartType: "PreStationData",
+    title: "监测站实时数据"
+  }, {
+    width: 2,
+    order: 5,
+    whr: 1,
+    chartType: "PreConnection",
+    title: "连接状态"
+  }]
+});
 
 const dash = rawLayouts3;
 
@@ -177,8 +218,20 @@ function onResize() {
 }
 onMounted(() => {
   onResize()
-  window.addEventListener('resize', onResize)
+  window.addEventListener('resize', onResize);
+  setInterval(() => {
+    dt.value = new Date();
+  }, 1000)
 })
+const dt = ref<Date>(new Date());
+const bjtime = computed(() => {
+  return dt.value.toLocaleString();
+})
+const utc = computed(() => {
+  const utcdt = new Date(dt.value.getUTCFullYear(), dt.value.getUTCMonth(), dt.value.getUTCDate(),
+    dt.value.getUTCHours(), dt.value.getUTCMinutes(), dt.value.getUTCSeconds());
+  return utcdt.toLocaleString();
+});
 
 </script>
 <style scoped>
@@ -202,5 +255,34 @@ onMounted(() => {
   color: rgb(67, 144, 212);
   text-align: center;
   margin-bottom: 0;
+  margin-top: 0;
+  flex-basis: 33.3%;
+  word-break: keep-all;
+  text-wrap: nowrap;
+}
+
+.title__container {
+  color: rgb(67, 144, 212);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 1em;
+  line-height: 1;
+  margin-top: 0.3em;
+}
+
+.logo-title {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.logo-title>img {
+  height: 24px;
+  align-items: center;
 }
 </style>

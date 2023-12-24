@@ -29,14 +29,29 @@ import {
   ErrorStationList,
   AbnormalFieldStrengthSiteProportion,
   AbnormalSignalToNoiseRatioSiteProportion,
-  PerimeterDifferenceErrorSiteProportion
+  PerimeterDifferenceErrorSiteProportion,
+  VisualizationVideo,
+  VisualizationCPU,
+  VisualizationDisk,
+  VisualizationWarning,
+  VisualizationAnalysisResult,
+  VisualizationDataVolumn,
+  StationMap,
+  PreConnection,
+  PreLastestMap,
+  PreLogsList,
+  PreSend,
+  PreStationData
 } from "./metaComponents";
 
 
 export type chartTypes = "DataVolumeStatistics" | "LargeScaleGraphOfInputData" | "DatabaseLogsList" |
   "DBCPUDash" | "DBDiskDash" | "DBConnectionStatus" | "AnalysisStation" | "AnalysisDegree" |
   "AnalysisSendData" | "ErrorStationList" | "AbnormalFieldStrengthSiteProportion" |
-  "AbnormalSignalToNoiseRatioSiteProportion" | "PerimeterDifferenceErrorSiteProportion";
+  "AbnormalSignalToNoiseRatioSiteProportion" | "PerimeterDifferenceErrorSiteProportion" |
+  "VisualizationVideo" | "VisualizationDisk" | "VisualizationCPU" | "VisualizationWarning" |
+  "VisualizationAnalysisResult" | "VisualizationDataVolumn" | "StationMap" | "PreConnection" |
+  "PreLastestMap" | "PreLogsList" | "PreSend" | "PreStationData";
 
 const target: Record<chartTypes, EChartsOption> = {
   "DataVolumeStatistics": DataVolumeStatistics,
@@ -52,6 +67,18 @@ const target: Record<chartTypes, EChartsOption> = {
   "AbnormalFieldStrengthSiteProportion": AbnormalFieldStrengthSiteProportion,
   "AbnormalSignalToNoiseRatioSiteProportion": AbnormalSignalToNoiseRatioSiteProportion,
   "PerimeterDifferenceErrorSiteProportion": PerimeterDifferenceErrorSiteProportion,
+  "VisualizationVideo": VisualizationVideo,
+  "VisualizationCPU": VisualizationCPU,
+  "VisualizationDisk": VisualizationDisk,
+  "VisualizationWarning": VisualizationWarning,
+  "VisualizationAnalysisResult": VisualizationAnalysisResult,
+  "VisualizationDataVolumn": VisualizationDataVolumn,
+  "StationMap": StationMap,
+  "PreConnection": PreConnection,
+  "PreLastestMap": PreLastestMap,
+  "PreLogsList": PreLogsList,
+  "PreSend": PreSend,
+  "PreStationData": PreStationData
 }
 
 defineProps<{
@@ -72,7 +99,7 @@ const paginationReactive = reactive({
     paginationReactive.pageSize = pageSize
     paginationReactive.page = 1
   }
-})
+});
 
 </script>
 <style scoped>
@@ -102,6 +129,7 @@ const paginationReactive = reactive({
       rgba(50, 163, 255, 0) 50%, rgba(50, 163, 255, 0.1) 92%, rgba(50, 163, 255, 0.5) 100%);
   position: relative;
 }
+
 
 .chartContainer:deep(.canvas) {
   width: 90%;

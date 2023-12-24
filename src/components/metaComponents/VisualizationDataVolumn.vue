@@ -9,42 +9,43 @@ import { refreshChart } from "./baseOptions";
 const canvas = ref<HTMLDivElement>();
 const options = ref<EChartsOption>({
   xAxis: {
-    data: ['西安监测站监测数据', '西安监测站时差数据', '卫星伪码授时增强信息', '星地融合授时信息'],
-    name: "数据库",
-    nameGap: 6,
+    type: 'category',
+    boundaryGap: false,
+    data: ['12/19', '12/20', '12/21', '12/22', '12/23', '12/24'],
+    splitLine: {
+      show: true,
+      lineStyle: {
+        color: '#cccccc',
+        type: "dashed"
+      },
+    },
+    axisTick: {
+      alignWithLabel: true
+    },
     axisLabel: {
       width: 64,
       overflow: "breakAll",
       interval: 0,
-    },
+    }
   },
   yAxis: {
-    name: "数据量(M)",
     type: 'value',
-  },
-  grid: {
-    left: 36,
-    right: 56,
-    top: 24,
-    bottom: 35
+    name: "数据量（M）",
   },
   series: [
     {
-      data: [120, 200, 150, 80],
-      type: 'bar',
-      showBackground: true,
-      backgroundStyle: {
-        color: 'rgba(180, 180, 180, 0.2)'
+      data: [150, 230, 224, 218, 225, 178],
+      type: 'line',
+      lineStyle: {
+        color: "rgb(160 204 243)"
       }
     }
   ]
-}
-);
+});
 const ctx = shallowRef<EChartsType>();
 const resizeListener = ref<() => void>();
 watch([canvas, options], () => {
   refreshChart(canvas, ctx, resizeListener, options as Ref<EChartsOption>);
 });
-
 </script>
 <style scoped></style>

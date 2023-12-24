@@ -9,14 +9,14 @@
     </div>
     <div class="station__container--success">
       <NIcon :size="32" color="#18A058">
-        <WifiOff24Regular />
+        <Database20Regular />
       </NIcon>
       <NH4 style="margin: 0;">正常站点</NH4>
       <NH6 style="margin: 0;">175</NH6>
     </div>
     <div class="station__container--error">
       <NIcon :size="32" color="#D03050">
-        <Database20Regular />
+        <WifiOff24Regular />
       </NIcon>
       <NH4 style="margin: 0">异常站点</NH4>
       <NH6 style="margin: 0">0</NH6>

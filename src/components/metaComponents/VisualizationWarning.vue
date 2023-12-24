@@ -1,5 +1,7 @@
 <template>
-  <div ref="canvas"></div>
+  <div ref="canvas">
+
+  </div>
 </template>
 <script setup lang="ts">
 import { EChartsOption, EChartsType } from 'echarts';
@@ -8,43 +10,42 @@ import { refreshChart } from "./baseOptions";
 
 const canvas = ref<HTMLDivElement>();
 const options = ref<EChartsOption>({
-  xAxis: {
-    data: ['西安监测站监测数据', '西安监测站时差数据', '卫星伪码授时增强信息', '星地融合授时信息'],
-    name: "数据库",
-    nameGap: 6,
-    axisLabel: {
-      width: 64,
-      overflow: "breakAll",
-      interval: 0,
-    },
-  },
-  yAxis: {
-    name: "数据量(M)",
-    type: 'value',
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'shadow'
+    }
   },
   grid: {
-    left: 36,
-    right: 56,
-    top: 24,
-    bottom: 35
+    left: '3%',
+    right: '4%',
+    bottom: '3%',
+    containLabel: true
+  },
+  xAxis: {
+    type: 'category',
+    data: ['3天前', '前天', '昨天', '今天'],
+    axisTick: {
+      alignWithLabel: true
+    }
+  },
+  yAxis: {
+    type: 'value',
+    name:"次数"
   },
   series: [
     {
-      data: [120, 200, 150, 80],
+      name: '次数',
       type: 'bar',
-      showBackground: true,
-      backgroundStyle: {
-        color: 'rgba(180, 180, 180, 0.2)'
-      }
+      barWidth: '60%',
+      data: [44, 32, 76, 12]
     }
   ]
-}
-);
+});
 const ctx = shallowRef<EChartsType>();
 const resizeListener = ref<() => void>();
 watch([canvas, options], () => {
   refreshChart(canvas, ctx, resizeListener, options as Ref<EChartsOption>);
 });
-
 </script>
 <style scoped></style>

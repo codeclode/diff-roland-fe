@@ -13,7 +13,6 @@ export const baseOptions: EChartsOption = {
     },
   },
   yAxis: {
-    name: "发送量(M)",
     nameGap:8,
     nameTextStyle: {
       color: "#6cf",
